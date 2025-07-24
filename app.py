@@ -8,9 +8,12 @@ from PyPDF2 import PdfReader
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import os
 
 # ✅ Fixed Credentials
-OPENROUTER_API_KEY = "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"
+os.environ["OPENAI_API_KEY"] = "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"
+os.environ["OPENAI_API_BASE"] = "https://openrouter.ai/api/v1"
+
 EMAIL_USER = "pradyumnkrishna0@gmail.com"
 EMAIL_PASS = "nxhdpxtspbeyedls"
 
@@ -44,8 +47,7 @@ if uploaded_file:
     qa_chain = RetrievalQA.from_chain_type(
         llm=ChatOpenAI(
             model="qwen/qwen3-coder:free",
-            openai_api_key=OPENROUTER_API_KEY,
-            openai_api_base="https://openrouter.ai/api/v1"
+            temperature=0
         ),
         retriever=db.as_retriever()
     )
@@ -59,8 +61,6 @@ if uploaded_file:
         email_prompt = f"Write a short professional email to HR based on this policy answer: '{answer}'."
         email_text = ChatOpenAI(
             model="qwen/qwen3-coder:free",
-            openai_api_key=OPENROUTER_API_KEY,
-            openai_api_base="https://openrouter.ai/api/v1",
             temperature=0.3
         ).predict(email_prompt)
 
